@@ -1,0 +1,1217 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darrell's Dashboard</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/darrellopoku-kwat/Organization-Dashboards-/main/LogoD.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2eb;
+    --surface: #fffef9;
+    --surface2: #efece4;
+    --ink: #1a1916;
+    --ink2: #5a574e;
+    --ink3: #9a9790;
+    --accent: #c14b2a;
+    --accent2: #2a6b4f;
+    --border: #d8d4c8;
+    --border2: #c0bbaf;
+    --shadow: rgba(26,25,22,0.08);
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #181714;
+      --surface: #221f1a;
+      --surface2: #2c2924;
+      --ink: #f0ece2;
+      --ink2: #a09c92;
+      --ink3: #605c54;
+      --accent: #e06040;
+      --accent2: #3d9e74;
+      --border: #36322c;
+      --border2: #46423a;
+      --shadow: rgba(0,0,0,0.3);
+    }
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .date-display {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink3);
+    letter-spacing: 0.04em;
+  }
+
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 20px;
+  }
+
+  .widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    position: relative;
+    transition: box-shadow 0.2s;
+  }
+
+  .widget:hover { box-shadow: 0 4px 20px var(--shadow); }
+
+  .widget-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .widget-title .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .widget-title .dot.green { background: var(--accent2); }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.15s;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .link-item:hover {
+    background: var(--border);
+    border-color: var(--border2);
+    transform: translateY(-1px);
+  }
+
+  .link-item .favicon {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--border2);
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    overflow: hidden;
+  }
+
+  .link-item .favicon img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    border-radius: 3px;
+  }
+
+  .add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: transparent;
+    border-radius: var(--radius);
+    border: 1px dashed var(--border2);
+    color: var(--ink3);
+    font-size: 12px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .visual-image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  object-position: 50% 50%;
+  border-radius: 12px;
+  opacity: 0.96;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  display: block;
+  }
+
+  #visual-controls {
+  opacity: 0.55;
+  transition: opacity 1.0s ease;
+  margin-top: 10px;
+  }
+
+  #visual-controls:hover,
+  .widget:hover #visual-controls {
+  opacity: 1;
+  }
+
+  .visual-image:hover {
+  opacity: 1;
+  }
+
+  .add-btn:hover { color: var(--ink); border-color: var(--ink3); background: var(--surface2); }
+
+  .notes-area {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.6;
+    resize: none;
+    min-height: 140px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .notes-area:focus { border-color: var(--border2); }
+  .notes-area::placeholder { color: var(--ink3); }
+
+  .todo-list, .planner-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .todo-item, .planner-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    font-size: 13px;
+    transition: opacity 0.2s;
+  }
+
+  .todo-item.done { opacity: 0.45; }
+  .todo-item.done .todo-text { text-decoration: line-through; }
+
+  .todo-check {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    font-size: 10px;
+    color: transparent;
+  }
+
+  .todo-item.done .todo-check {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: white;
+  }
+
+  .todo-text,
+  .planner-time,
+  .planner-text {
+    outline: none;
+    background: transparent;
+    border: none;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+  }
+
+  .todo-text { flex: 1; }
+  .planner-time {
+    width: 72px;
+    flex-shrink: 0;
+    font-family: var(--mono);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .planner-text { flex: 1; }
+
+  .todo-del, .planner-del {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink3);
+    font-size: 14px;
+    padding: 0 2px;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  .todo-item:hover .todo-del,
+  .planner-item:hover .planner-del { opacity: 1; }
+
+  .todo-input-row, .planner-input-row {
+    display: flex; gap: 6px;
+  }
+
+  .todo-input, .planner-input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .todo-input::placeholder,
+  .planner-input::placeholder { color: var(--ink3); }
+
+  .todo-input:focus,
+  .planner-input:focus { border-color: var(--border2); }
+
+  .btn-sm {
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 8px 14px;
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .btn-sm:hover { opacity: 0.85; }
+
+  .timer-display {
+    font-family: var(--mono);
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--ink);
+    text-align: center;
+    letter-spacing: 0.04em;
+    margin: 12px 0;
+    line-height: 1;
+  }
+
+  .timer-label {
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink3);
+    font-family: var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .timer-bar-bg {
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .timer-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 1s linear;
+    width: 100%;
+  }
+
+  .timer-controls {
+    display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  }
+
+  .btn-timer {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-timer:hover { border-color: var(--border2); background: var(--border); }
+  .btn-timer.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+  .habit-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .habit-row:last-child { border-bottom: none; }
+
+  .habit-name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink);
+  }
+
+  .habit-dots {
+    display: flex; gap: 4px;
+  }
+
+  .habit-dot {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border2);
+    background: transparent;
+    cursor: pointer;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--ink3);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .habit-dot.done {
+    background: var(--accent2);
+    border-color: var(--accent2);
+    color: white;
+  }
+
+  .habit-del {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--ink3);
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.1s;
+    padding: 0 2px;
+  }
+
+  .habit-row:hover .habit-del { opacity: 1; }
+
+  .quote-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink2);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .quote-author {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink3);
+    letter-spacing: 0.06em;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink3);
+    margin-bottom: 6px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .span2 { grid-column: span 2; }
+  .span3 { grid-column: span 3; }
+  .span1 { grid-column: span 1; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modal h3 { font-size: 15px; font-family: var(--mono); font-weight: 700; }
+
+  .modal input, .modal select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 9px 12px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+  }
+
+  .modal input:focus { border-color: var(--border2); }
+
+  .modal-btns { display: flex; gap: 8px; justify-content: flex-end; }
+
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--ink2);
+    cursor: pointer;
+  }
+
+  .cat-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+  }
+
+  .greeting {
+    grid-column: span 3;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 4px;
+  }
+
+  .greeting h1 { font-family: var(--mono); font-size: 22px; font-weight: 700; }
+  .greeting h1 span { color: var(--accent); }
+  .greeting p { font-size: 13px; color: var(--ink3); font-family: var(--mono); }
+
+  @media (max-width: 800px) {
+    .main { grid-template-columns: 1fr 1fr; }
+    .greeting { grid-column: span 2; }
+    .span2 { grid-column: span 2; }
+    .span3 { grid-column: span 2; }
+  }
+
+  @media (max-width: 520px) {
+    .main { grid-template-columns: 1fr; }
+    .greeting, .span2, .span3 { grid-column: span 1; }
+    header { padding: 14px 16px; }
+    .stats-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">✦ Dashboard</div>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <div class="date-display" id="header-date"></div>
+    <button class="btn-ghost" onclick="resetDashboard()">Reset</button>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="greeting">
+    <h1>Hey, <span>Darrell</span> ✦</h1>
+    <p id="greeting-time"></p>
+  </div>
+
+<div class="widget span3">
+  <div class="widget-title"><span class="dot"></span> Visual</div>
+
+  <div style="overflow:hidden; border-radius:12px;">
+  <img
+    id="visual-image"
+    src=""
+    alt="Aesthetic visual"
+    class="visual-image"
+  >
+  <div id="visual-controls">
+  <input type="range" min="0" max="100" value="50" id="img-x" oninput="updateImg()">
+  <input type="range" min="0" max="100" value="50" id="img-y" oninput="updateImg()">
+  <input type="range" min="100" max="110" value="100" id="img-z" oninput="updateImg()">
+</div>
+  
+  <div class="planner-input-row" style="margin-top:12px;">
+    <input
+      class="planner-input"
+      id="visual-url-input"
+      placeholder="Paste image URL..."
+      onkeydown="if(event.key==='Enter')saveVisualImage()"
+    >
+    <button class="btn-sm" onclick="saveVisualImage()">Save</button>
+    <button class="btn-ghost" onclick="resetVisualImage()">Default</button>
+  </div>
+</div>
+
+  <div class="widget span2">
+    <div class="widget-title"><span class="dot"></span> Quick Links</div>
+    <div class="links-grid" id="links-grid"></div>
+    <div style="margin-top: 8px;">
+      <button class="add-btn" onclick="openLinkModal()" style="width:100%">+ Add link</button>
+    </div>
+  </div>
+
+  <div class="widget span1">
+    <div class="widget-title"><span class="dot"></span> Focus Timer</div>
+    <div class="timer-display" id="timer-display">25:00</div>
+    <div class="timer-label" id="timer-label">Pomodoro</div>
+    <div class="timer-bar-bg"><div class="timer-bar-fill" id="timer-bar"></div></div>
+    <div class="timer-controls">
+      <button class="btn-timer active" onclick="setTimer(25,'Pomodoro')" id="btn-pomo">25 min</button>
+      <button class="btn-timer" onclick="setTimer(5,'Short break')" id="btn-short">5 min</button>
+      <button class="btn-timer" onclick="setTimer(15,'Long break')" id="btn-long">15 min</button>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+      <button class="btn-timer" id="btn-start" onclick="toggleTimer()">Start</button>
+      <button class="btn-timer" onclick="resetTimer()">Reset</button>
+    </div>
+  </div>
+
+  <div class="widget span1">
+    <div class="widget-title"><span class="dot green"></span> To-Do</div>
+    <ul class="todo-list" id="todo-list"></ul>
+    <div class="todo-input-row">
+      <input class="todo-input" id="todo-input" placeholder="Add task..." onkeydown="if(event.key==='Enter')addTodo()">
+      <button class="btn-sm" onclick="addTodo()">+</button>
+    </div>
+  </div>
+
+  <div class="widget span1">
+    <div class="widget-title"><span class="dot"></span> Habits — This Week</div>
+    <div id="habits-container"></div>
+    <div class="todo-input-row" style="margin-top:10px;">
+      <input class="todo-input" id="habit-input" placeholder="New habit..." onkeydown="if(event.key==='Enter')addHabit()">
+      <button class="btn-sm" onclick="addHabit()">+</button>
+    </div>
+  </div>
+
+  <div class="widget span1">
+    <div class="widget-title"><span class="dot green"></span> Quick Notes</div>
+    <textarea class="notes-area" id="notes-area" placeholder="Jot anything down..."></textarea>
+  </div>
+
+  <div class="widget span2">
+    <div class="widget-title"><span class="dot"></span> Daily Planner</div>
+    <ul class="planner-list" id="planner-list"></ul>
+    <div class="planner-input-row">
+      <input class="planner-input" id="planner-time-input" placeholder="9:00 AM" onkeydown="if(event.key==='Enter')addPlannerItem()">
+      <input class="planner-input" id="planner-text-input" placeholder="What are you doing?" onkeydown="if(event.key==='Enter')addPlannerItem()">
+      <button class="btn-sm" onclick="addPlannerItem()">+</button>
+    </div>
+  </div>
+
+  <div class="widget span1">
+    <div class="widget-title"><span class="dot green"></span> Stats</div>
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Tasks</div>
+        <div class="stat-value" id="stat-total-todos">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Done</div>
+        <div class="stat-value" id="stat-done-todos">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completion</div>
+        <div class="stat-value" id="stat-completion">0%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Habit Checks</div>
+        <div class="stat-value" id="stat-habit-checks">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="widget span1">
+    <div class="widget-title"><span class="dot"></span> Daily Quote</div>
+    <p class="quote-text" id="quote-text"></p>
+    <p class="quote-author" id="quote-author"></p>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="link-modal">
+  <div class="modal">
+    <h3>Add Link</h3>
+    <input id="modal-name" placeholder="Label (e.g. Canvas, Spotify...)">
+    <input id="modal-url" placeholder="URL (e.g. https://...)">
+    <select id="modal-cat">
+      <option value="school">School</option>
+      <option value="music">Music / DJ</option>
+      <option value="work">Work</option>
+      <option value="social">Social</option>
+      <option value="tools">Tools</option>
+      <option value="other">Other</option>
+    </select>
+    <div class="modal-btns">
+      <button class="btn-ghost" onclick="closeLinkModal()">Cancel</button>
+      <button class="btn-sm" onclick="saveLink()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function updateClock() {
+  const now = new Date();
+  const h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hh = h % 12 || 12;
+  const mm = String(m).padStart(2,'0');
+  document.getElementById('header-date').textContent = `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}`;
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting-time').textContent = `${greet} — ${hh}:${mm} ${ampm}`;
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+const get = k => {
+  try { return JSON.parse(localStorage.getItem(k)); }
+  catch { return null; }
+};
+const set = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+const quotes = [
+  { text: "An investment in knowledge pays the best interest.", author: "Benjamin Franklin" },
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+  { text: "Small steps every day add up to big results.", author: "Anonymous" },
+  { text: "You don't have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+  { text: "The expert in anything was once a beginner.", author: "Helen Hayes" },
+  { text: "Discipline is the bridge between goals and accomplishment.", author: "Jim Rohn" },
+];
+const q = quotes[new Date().getDate() % quotes.length];
+document.getElementById('quote-text').textContent = `"${q.text}"`;
+document.getElementById('quote-author').textContent = `— ${q.author}`;
+
+const catColors = {
+  school: { bg: '#e8f0fe', text: '#1a56a8', dbg: '#1a3a6b', dtxt: '#93b4f0' },
+  music:  { bg: '#fce8f3', text: '#9c1f6e', dbg: '#5a0f40', dtxt: '#e891c8' },
+  work:   { bg: '#fff3e0', text: '#a05000', dbg: '#5c2d00', dtxt: '#ffa85a' },
+  social: { bg: '#e8f8f5', text: '#0e6651', dbg: '#053d30', dtxt: '#52c4a6' },
+  tools:  { bg: '#f3e8fd', text: '#6a1fa3', dbg: '#3d0e5e', dtxt: '#c48af0' },
+  other:  { bg: '#f0efee', text: '#5a574e', dbg: '#2a2820', dtxt: '#a09c92' },
+};
+
+function getCatStyle(cat) {
+  const c = catColors[cat] || catColors.other;
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  return dark
+    ? `background:${c.dbg};color:${c.dtxt};`
+    : `background:${c.bg};color:${c.text};`;
+}
+
+function getDefaultLinks() {
+  return [
+    { name: 'Canvas', url: 'https://canvas.instructure.com', cat: 'school' },
+    { name: 'Gmail', url: 'https://mail.google.com', cat: 'tools' },
+    { name: 'Spotify', url: 'https://spotify.com', cat: 'music' },
+    { name: 'YouTube', url: 'https://youtube.com', cat: 'social' },
+    { name: 'Notion', url: 'https://notion.so', cat: 'work' },
+    { name: 'ChatGPT', url: 'https://chat.openai.com', cat: 'tools' },
+  ];
+}
+
+function renderLinks() {
+  const links = get('dash_links') || getDefaultLinks();
+  const grid = document.getElementById('links-grid');
+  grid.innerHTML = '';
+  links.forEach((lnk, i) => {
+    const div = document.createElement('a');
+    div.className = 'link-item';
+    div.title = lnk.url;
+    div.href = lnk.url;
+    div.target = '_blank';
+    div.rel = 'noopener';
+    div.innerHTML = `
+      <div class="favicon">
+        <img src="https://www.google.com/s2/favicons?sz=32&domain_url=${encodeURIComponent(lnk.url)}" alt="" onerror="this.parentNode.textContent='${lnk.name[0]}'" loading="lazy">
+      </div>
+      <span style="overflow:hidden;text-overflow:ellipsis;flex:1;">${lnk.name}</span>
+      <span class="cat-badge" style="${getCatStyle(lnk.cat)}">${lnk.cat}</span>
+    `;
+    div.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (confirm(`Remove "${lnk.name}"?`)) {
+        const arr = get('dash_links') || getDefaultLinks();
+        arr.splice(i, 1);
+        set('dash_links', arr);
+        renderLinks();
+      }
+    });
+    grid.appendChild(div);
+  });
+}
+
+function openLinkModal() {
+  document.getElementById('link-modal').classList.add('open');
+  document.getElementById('modal-name').focus();
+}
+function closeLinkModal() {
+  document.getElementById('link-modal').classList.remove('open');
+}
+function saveLink() {
+  const name = document.getElementById('modal-name').value.trim();
+  let url = document.getElementById('modal-url').value.trim();
+  const cat = document.getElementById('modal-cat').value;
+  if (!name || !url) return;
+  if (!/^https?:\/\//.test(url)) url = 'https://' + url;
+  const arr = get('dash_links') || getDefaultLinks();
+  arr.push({ name, url, cat });
+  set('dash_links', arr);
+  renderLinks();
+  closeLinkModal();
+  document.getElementById('modal-name').value = '';
+  document.getElementById('modal-url').value = '';
+}
+document.getElementById('link-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLinkModal();
+});
+
+renderLinks();
+
+function renderTodos() {
+  const todos = get('dash_todos') || [];
+  const list = document.getElementById('todo-list');
+  list.innerHTML = '';
+  todos.forEach((t, i) => {
+    const li = document.createElement('li');
+    li.className = 'todo-item' + (t.done ? ' done' : '');
+    li.innerHTML = `
+      <div class="todo-check" onclick="toggleTodo(${i})">${t.done ? '✓' : ''}</div>
+      <span class="todo-text" contenteditable="true" onblur="editTodo(${i},this.textContent)">${t.text}</span>
+      <button class="todo-del" onclick="deleteTodo(${i})">✕</button>
+    `;
+    list.appendChild(li);
+  });
+  renderStats();
+}
+
+function addTodo() {
+  const inp = document.getElementById('todo-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  const arr = get('dash_todos') || [];
+  arr.push({ text, done: false });
+  set('dash_todos', arr);
+  inp.value = '';
+  renderTodos();
+}
+
+function toggleTodo(i) {
+  const arr = get('dash_todos') || [];
+  arr[i].done = !arr[i].done;
+  set('dash_todos', arr);
+  renderTodos();
+}
+
+function deleteTodo(i) {
+  const arr = get('dash_todos') || [];
+  arr.splice(i, 1);
+  set('dash_todos', arr);
+  renderTodos();
+}
+
+function editTodo(i, text) {
+  const arr = get('dash_todos') || [];
+  arr[i].text = text.trim();
+  set('dash_todos', arr);
+  renderStats();
+}
+
+renderTodos();
+
+const DAYS_SHORT = ['M','T','W','T','F','S','S'];
+
+function getDefaultHabits() {
+  return [
+    { name: 'Exercise', days: Array(7).fill(false) },
+    { name: 'Read', days: Array(7).fill(false) },
+    { name: 'Portuguese', days: Array(7).fill(false) },
+  ];
+}
+
+function renderHabits() {
+  const habits = get('dash_habits') || getDefaultHabits();
+  const container = document.getElementById('habits-container');
+  container.innerHTML = '';
+  habits.forEach((h, hi) => {
+    const row = document.createElement('div');
+    row.className = 'habit-row';
+    const dots = DAYS_SHORT.map((d, di) => {
+      const done = h.days && h.days[di];
+      return `<div class="habit-dot ${done ? 'done' : ''}" onclick="toggleHabit(${hi},${di})" title="${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'][di]}">${done ? '✓' : d}</div>`;
+    }).join('');
+    row.innerHTML = `
+      <span class="habit-name">${h.name}</span>
+      <div class="habit-dots">${dots}</div>
+      <button class="habit-del" onclick="deleteHabit(${hi})">✕</button>
+    `;
+    container.appendChild(row);
+  });
+  renderStats();
+}
+
+function addHabit() {
+  const inp = document.getElementById('habit-input');
+  const name = inp.value.trim();
+  if (!name) return;
+  const arr = get('dash_habits') || getDefaultHabits();
+  arr.push({ name, days: Array(7).fill(false) });
+  set('dash_habits', arr);
+  inp.value = '';
+  renderHabits();
+}
+
+function toggleHabit(hi, di) {
+  const arr = get('dash_habits') || getDefaultHabits();
+  arr[hi].days[di] = !arr[hi].days[di];
+  set('dash_habits', arr);
+  renderHabits();
+}
+
+function deleteHabit(hi) {
+  const arr = get('dash_habits') || getDefaultHabits();
+  arr.splice(hi, 1);
+  set('dash_habits', arr);
+  renderHabits();
+}
+
+renderHabits();
+
+const notesArea = document.getElementById('notes-area');
+notesArea.value = get('dash_notes') || '';
+notesArea.addEventListener('input', () => set('dash_notes', notesArea.value));
+
+function parsePlannerTimeToMinutes(timeStr) {
+  const text = String(timeStr).trim().toUpperCase();
+
+  const match12 = text.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/);
+  if (match12) {
+    let hour = parseInt(match12[1], 10);
+    const minute = parseInt(match12[2] || '0', 10);
+    const period = match12[3];
+
+    if (hour === 12) hour = 0;
+    if (period === 'PM') hour += 12;
+
+    return hour * 60 + minute;
+  }
+
+  const match24 = text.match(/^(\d{1,2}):(\d{2})$/);
+  if (match24) {
+    const hour = parseInt(match24[1], 10);
+    const minute = parseInt(match24[2], 10);
+    return hour * 60 + minute;
+  }
+
+  return Number.MAX_SAFE_INTEGER;
+}
+
+function sortPlannerItems(items) {
+  return items.sort((a, b) => {
+    const timeA = parsePlannerTimeToMinutes(a.time);
+    const timeB = parsePlannerTimeToMinutes(b.time);
+    return timeA - timeB;
+  });
+}
+
+function renderPlanner() {
+  const items = get('dash_planner') || [];
+  const list = document.getElementById('planner-list');
+  list.innerHTML = '';
+
+  items.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.className = 'planner-item';
+    li.innerHTML = `
+      <span class="planner-time" contenteditable="true" onblur="editPlannerTime(${i}, this.textContent)">${item.time}</span>
+      <span class="planner-text" contenteditable="true" onblur="editPlannerText(${i}, this.textContent)">${item.text}</span>
+      <button class="planner-del" onclick="deletePlannerItem(${i})">✕</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function addPlannerItem() {
+  const timeInput = document.getElementById('planner-time-input');
+  const textInput = document.getElementById('planner-text-input');
+  const time = timeInput.value.trim();
+  const text = textInput.value.trim();
+  if (!time || !text) return;
+
+  const arr = get('dash_planner') || [];
+  arr.push({ time, text });
+  sortPlannerItems(arr);
+  set('dash_planner', arr);
+
+  timeInput.value = '';
+  textInput.value = '';
+  renderPlanner();
+}
+
+function editPlannerTime(i, text) {
+  const arr = get('dash_planner') || [];
+  arr[i].time = text.trim();
+  sortPlannerItems(arr);
+  set('dash_planner', arr);
+  renderPlanner();
+}
+
+function editPlannerText(i, text) {
+  const arr = get('dash_planner') || [];
+  arr[i].text = text.trim();
+  set('dash_planner', arr);
+}
+
+function deletePlannerItem(i) {
+  const arr = get('dash_planner') || [];
+  arr.splice(i, 1);
+  set('dash_planner', arr);
+  renderPlanner();
+}
+
+renderPlanner();
+function renderStats() {
+  const todos = get('dash_todos') || [];
+  const habits = get('dash_habits') || getDefaultHabits();
+
+  const totalTodos = todos.length;
+  const doneTodos = todos.filter(t => t.done).length;
+  const completion = totalTodos ? Math.round((doneTodos / totalTodos) * 100) : 0;
+
+  let habitChecks = 0;
+  for (const habit of habits) {
+    if (habit.days) {
+      habitChecks += habit.days.filter(Boolean).length;
+    }
+  }
+
+  document.getElementById('stat-total-todos').textContent = totalTodos;
+  document.getElementById('stat-done-todos').textContent = doneTodos;
+  document.getElementById('stat-completion').textContent = `${completion}%`;
+  document.getElementById('stat-habit-checks').textContent = habitChecks;
+}
+
+renderStats();
+
+let timerDuration = 25 * 60;
+let timerRemaining = timerDuration;
+let timerInterval = null;
+let timerRunning = false;
+
+function fmtTime(s) {
+  return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+}
+
+function setTimer(mins, label) {
+  resetTimer();
+  timerDuration = mins * 60;
+  timerRemaining = timerDuration;
+  document.getElementById('timer-display').textContent = fmtTime(timerRemaining);
+  document.getElementById('timer-label').textContent = label;
+  document.getElementById('timer-bar').style.width = '100%';
+  ['btn-pomo','btn-short','btn-long'].forEach(id => document.getElementById(id).classList.remove('active'));
+  if (mins === 25) document.getElementById('btn-pomo').classList.add('active');
+  else if (mins === 5) document.getElementById('btn-short').classList.add('active');
+  else document.getElementById('btn-long').classList.add('active');
+}
+
+function toggleTimer() {
+  const btn = document.getElementById('btn-start');
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    btn.textContent = 'Start';
+    btn.classList.remove('active');
+  } else {
+    timerRunning = true;
+    btn.textContent = 'Pause';
+    btn.classList.add('active');
+    timerInterval = setInterval(() => {
+      timerRemaining--;
+      document.getElementById('timer-display').textContent = fmtTime(timerRemaining);
+      const pct = (timerRemaining / timerDuration) * 100;
+      document.getElementById('timer-bar').style.width = pct + '%';
+      if (timerRemaining <= 0) {
+        clearInterval(timerInterval);
+        timerRunning = false;
+        btn.textContent = 'Start';
+        btn.classList.remove('active');
+        document.getElementById('timer-label').textContent = 'Done! Take a break ✓';
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = timerDuration;
+  document.getElementById('timer-display').textContent = fmtTime(timerRemaining);
+  document.getElementById('timer-bar').style.width = '100%';
+  const btn = document.getElementById('btn-start');
+  btn.textContent = 'Start';
+  btn.classList.remove('active');
+}
+
+const DEFAULT_VISUAL_IMAGE = 'https://raw.githubusercontent.com/darrellopoku-kwat/Organization-Dashboards-/main/DarrellAaron.JPG';
+
+function loadVisualImage() {
+  const savedUrl = get('dash_visual_image');
+  const imageUrl = savedUrl || DEFAULT_VISUAL_IMAGE;
+
+  const img = document.getElementById('visual-image');
+  const input = document.getElementById('visual-url-input');
+
+  if (!img || !input) return;
+
+  img.src = imageUrl;
+  input.value = savedUrl || '';
+
+  img.onerror = function () {
+    img.src = DEFAULT_VISUAL_IMAGE;
+  };
+}
+
+function saveVisualImage() {
+  const input = document.getElementById('visual-url-input');
+  const url = input.value.trim();
+  if (!url) return;
+
+  set('dash_visual_image', url);
+  loadVisualImage();
+}
+
+function resetDashboard() {
+  if (!confirm('This will erase all your data. Continue?')) return;
+
+  localStorage.clear();
+  location.reload();
+}
+
+function resetVisualImage() {
+  localStorage.removeItem('dash_visual_image');
+  loadVisualImage();
+}
+function updateImg() {
+  const img = document.getElementById('visual-image');
+  const x = imgX.value, y = imgY.value, z = imgZ.value;
+  img.style.objectPosition = `${x}% ${y}%`;
+  img.style.transform = `scale(${z / 100})`;
+  localStorage.setItem('imgSettings', JSON.stringify({ x, y, z }));
+}
+
+const imgX = document.getElementById('img-x');
+const imgY = document.getElementById('img-y');
+const imgZ = document.getElementById('img-z');
+const savedImg = JSON.parse(localStorage.getItem('imgSettings') || '{"x":50,"y":50,"z":100}');
+imgX.value = savedImg.x;
+imgY.value = savedImg.y;
+imgZ.value = savedImg.z;
+updateImg();
+
+loadVisualImage();
+</script>
+</body>
+</html>
